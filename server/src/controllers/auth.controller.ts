@@ -23,7 +23,8 @@ const login = asyncHandler(async (req: Request, res: Response, next) => {
       return;
     }
     // generate JWT
-    generateToken(user.id, res);
+    const token = generateToken(user.id, res);
+    console.log(token);
     res.status(200).json({
       success: true,
       message: "Login successful",
@@ -53,6 +54,8 @@ const logout = asyncHandler(async (req: Request, res: Response, next) => {
   try {
     // clear all
     res.clearCookie("access");
+    // clear cookie of access
+
     res.status(200).json({
       success: true,
       message: "Logout successful",
@@ -149,9 +152,38 @@ const signup = asyncHandler(async (req: Request, res: Response, next) => {
   }
 });
 
+const getMe = asyncHandler(async (req: Request, res: Response, next) => {
+  try {
+    const user = await prisma.user.findUnique({ where: { id: req.user.id } });
+    if (!user) {
+      res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+      return;
+    }
+
+    res.status(200).json({
+      success: true,
+      user: {
+        id: user.id,
+        username: user.username,
+        profilePic: user.profilePic,
+        fullName: user.fullName,
+      },
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
+    console.error(error);
+  }
+});
+
 const controllers = {
   login,
-
+  getMe,
   logout,
   signup,
 };

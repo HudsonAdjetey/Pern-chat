@@ -8,7 +8,7 @@ const generateToken = (userId: string, res: Response): {} | void => {
     },
     process.env.JWT_SECRET!,
     {
-      expiresIn: "15d", // 1 hour
+      expiresIn: "15d", 
     }
   );
   res.cookie("access", token, {
@@ -20,5 +20,6 @@ const generateToken = (userId: string, res: Response): {} | void => {
 
   return token;
 };
+
 
 export default generateToken;
