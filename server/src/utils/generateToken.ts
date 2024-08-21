@@ -8,18 +8,17 @@ const generateToken = (userId: string, res: Response): {} | void => {
     },
     process.env.JWT_SECRET!,
     {
-      expiresIn: "15d", 
+      expiresIn: "15h",
     }
   );
   res.cookie("access", token, {
     httpOnly: true,
-    maxAge: 15 * 24 * 60 * 60,
+    maxAge: 15 * 60 * 60 * 1000,
     sameSite: "strict", //
-    secure: process.env.NODE_ENV! === "production", // true for production
+    secure: process.env.NODE_ENV! === "production",
   });
 
   return token;
 };
-
 
 export default generateToken;

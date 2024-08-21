@@ -105,9 +105,40 @@ const getMessage = asyncHandler(async (req: Request, res: Response, next) => {
   }
 });
 
+const getUsers = asyncHandler(async (req: Request, res: Response, next) => {
+  try {
+    const authorUserId = req.user.id;
+    const users = await prisma.user.findMany({
+      where: {
+        id: {
+          not: authorUserId,
+        },
+      },
+      select: {
+        id: true,
+        fullName: true,
+        username: true,
+        profilePic: true,
+      },
+    });
+    res.status(200).json({
+      success: true,
+      users,
+    });
+  } catch (error: any) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
+    next(error);
+  }
+});
+
 const messageControllers = {
   sendMessage,
   getMessage,
+  getUsers,
 };
 
 export default messageControllers;

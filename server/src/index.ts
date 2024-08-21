@@ -15,6 +15,8 @@ app.use(cookieParser());
 app.use("/api/auth/", authRoutes);
 app.use("/api/messages", messageRoutes);
 
+// TODO: Add socket.io
+// TODO: Configure socket.io
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });

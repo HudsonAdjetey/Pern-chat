@@ -23,8 +23,7 @@ const login = asyncHandler(async (req: Request, res: Response, next) => {
       return;
     }
     // generate JWT
-    const token = generateToken(user.id, res);
-    console.log(token);
+    generateToken(user.id, res);
     res.status(200).json({
       success: true,
       message: "Login successful",
