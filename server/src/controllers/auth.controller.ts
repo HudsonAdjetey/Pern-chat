@@ -178,6 +178,7 @@ const getMe = asyncHandler(async (req: Request, res: Response, next) => {
       message: "Server error",
     });
     console.error(error);
+    next(error);
   }
 });
 
