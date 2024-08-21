@@ -64,6 +64,40 @@ const sendMessage = asyncHandler(async (req: Request, res: Response, next) => {
         },
       });
     }
+    res.status(201).json(newMessage);
+  } catch (error: any) {
+    console.log(error);
+    res.status(500).json({ success: false, message: "Server error" });
+    next(error);
+  }
+});
+
+// get messages
+
+const getMessage = asyncHandler(async (req: Request, res: Response, next) => {
+  try {
+    const { id: userToChatId } = req.params;
+    const senderId = req.user?.id;
+    const conversation = await prisma.conversation.findFirst({
+      where: {
+        participantsIds: {
+          hasEvery: [senderId, userToChatId],
+        },
+      },
+      include: {
+        messages: {
+          orderBy: { createdAt: "asc" },
+          include: {
+            sender: true,
+          },
+        },
+      },
+    });
+    if (!conversation) {
+      res.status(404).json({ success: false, message: [] });
+      return;
+    }
+    res.status(200).json(conversation.messages);
   } catch (error: any) {
     console.log(error);
     res.status(500).json({ success: false, message: "Server error" });
@@ -73,6 +107,7 @@ const sendMessage = asyncHandler(async (req: Request, res: Response, next) => {
 
 const messageControllers = {
   sendMessage,
+  getMessage,
 };
 
 export default messageControllers;
